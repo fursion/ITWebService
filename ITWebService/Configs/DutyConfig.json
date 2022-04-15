@@ -1,0 +1,10 @@
+﻿{
+  "SavePath": "TempFile",
+  "ContactLinkPath": "TempFile/DutyInfo/linklist.json",
+  "TemplatePath": "Template.json",
+  "SheetName": "IFS班表",
+  "FolderPath": "TempFile/DutyInfo",
+  "TempHeader": "TempHeader.txt",
+  "TempTail": "TempTail.txt"
+}
+

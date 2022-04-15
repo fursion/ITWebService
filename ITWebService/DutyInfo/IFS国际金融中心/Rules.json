@@ -1,0 +1,22 @@
+﻿{
+  "LocationInOnly": false,
+  "Cycle": 4,
+  "MaskItem": [
+    "白（初）",
+    "休"
+  ],
+  "SortRules": {
+    "Shift": [
+      "早班",
+      "常班",
+      "白班",
+      "中班",
+      "晚班",
+      "夜班"
+    ],
+    "Location": [
+      "15F",
+      "40F"
+    ]
+  }
+}
