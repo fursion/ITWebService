@@ -17,8 +17,10 @@ namespace ITWebService.Core.DutyInfos
         public void Refresh()
         {
             try
-            {               
-                ContactsLinksDict = JsonSerializer.Deserialize<Dictionary<string, string>>(IO.ReadAllText(Path.Combine(ConfigCore.WebRootPath,ConfigCore.GetConfigItem<DutyConfig>().ContactLinkPath)));
+            {
+                var path = Path.Combine(ConfigCore.WebRootPath,ConfigCore.GetConfigItem<DutyConfig>().FolderPath, ConfigCore.GetConfigItem<DutyConfig>().ContactLinkPath);
+                //Console.WriteLine(path);
+                ContactsLinksDict = JsonSerializer.Deserialize<Dictionary<string, string>>(IO.ReadAllText(path));
             }
             catch (Exception e) { Console.WriteLine(e.Message); }
         }

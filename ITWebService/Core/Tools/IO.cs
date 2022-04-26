@@ -89,5 +89,9 @@ namespace ITWebService.Core
             OkObjectResult ok = new(new { count = files.Count, size });
             return ok;
         }
+        public static string strtopath(string pathstr){
+            System.Console.WriteLine(Path.Combine(pathstr));
+            return "/";
+        }
     }
 }

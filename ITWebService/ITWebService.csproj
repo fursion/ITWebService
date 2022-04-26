@@ -16,4 +16,39 @@
   <ItemGroup>
     <None Remove="NPOI" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="DutyInfo\IFS国际金融中心\IFS国际金融中心duty.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DutyInfo\IFS国际金融中心\TempHeader.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DutyInfo\IFS国际金融中心\TempInfo.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DutyInfo\IFS国际金融中心\TempTail.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DutyInfo\瑞鑫时代大厦\TempHeader.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DutyInfo\瑞鑫时代大厦\TempInfo.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DutyInfo\瑞鑫时代大厦\TempTail.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DutyInfo\瑞鑫时代大厦\瑞鑫时代大厦duty.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DutyInfo\RestartService.sh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DutyInfo\syncpull.sh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DutyInfo\syncpush.sh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

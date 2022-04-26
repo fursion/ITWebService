@@ -1,4 +1,4 @@
-#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+﻿#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
@@ -17,9 +17,10 @@ RUN dotnet build "ITWebService.csproj" -c Release -o /app/build
 
 FROM build AS publish
 RUN dotnet publish "ITWebService.csproj" -c Release -o /app/publish
-
+RUN ls -al /app/publish/DutyInfo/IFS国际金融中心
 FROM base AS final
 WORKDIR /app
 #
 COPY --from=publish /app/publish .
+COPY --from=publish /app/publish/DutyInfo /etc/ITWebService/DutyInfo
 ENTRYPOINT ["dotnet", "ITWebService.dll"]

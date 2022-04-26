@@ -1,9 +1,10 @@
 ﻿{
+  "ConfigPath":"/etc/ITWebService/DutyInfo",
   "SavePath": "TempFile",
-  "ContactLinkPath": "TempFile/DutyInfo/linklist.json",
+  "ContactLinkPath": "linklist.json",
   "TemplatePath": "Template.json",
   "SheetName": "IFS班表",
-  "FolderPath": "TempFile/DutyInfo",
+  "FolderPath": "DutyInfo",
   "TempHeader": "TempHeader.txt",
   "TempTail": "TempTail.txt"
 }

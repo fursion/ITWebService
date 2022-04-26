@@ -3,8 +3,9 @@ namespace ITWebService.Core.Config
 {
     public class DutyConfig : IConfig
     {
+        public string? ConfigPath {get;set;}
         public string SavePath { get; set; }
-        public string ContactLinkPath { get; set; }
+        public string? ContactLinkPath { get; set; }
         public string TemplatePath { get; set; }
         public string TempHeader { get; set; }
         public string TempTail { get; set; }

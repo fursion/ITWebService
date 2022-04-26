@@ -53,7 +53,7 @@ namespace ITWebService.Controllers
         [HttpGet]
         public string[] GetSiteInfo()
         {
-            var str = System.IO.File.ReadAllText(Path.Combine(ConfigCore.WebRootPath, "./DutyInfo/Sites.json"));
+            var str = System.IO.File.ReadAllText(Path.Combine(ConfigCore.WebRootPath, "/etc/ITWebService/DutyInfo/Sites.json"));
             var siteinfo = JsonSerializer.Deserialize<string[]>(str);
             return siteinfo;
         }

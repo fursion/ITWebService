@@ -52,17 +52,7 @@ namespace ITWebService.Core.DutyInfos
         private Dictionary<string, Dutyinfos> DutyinfosDict { get; set; }
         public DutyInfoComputeHander(ref PersonOnDutyInfoModel model, int index = 0)
         {
-            Compute(ref model,index);
-            /*
-            var rulefilepath = Path.Combine(ConfigCore.WebRootPath, ConfigCore.GetConfigItem<DutyConfig>().FolderPath, model.Location[index], "Rules.json");//生成班表文件路径
-            var Dutyinfosfilepath = Path.Combine(ConfigCore.WebRootPath, ConfigCore.GetConfigItem<DutyConfig>().FolderPath, model.Location[index], "DutyInfo.json");
-            PersonInfoTemplate = IO.ReadAllText(Path.Combine(ConfigCore.WebRootPath, ConfigCore.GetConfigItem<DutyConfig>().FolderPath, model.Location[index], "TempInfo.txt"));
-            DutyRule = getDutyRule(rulefilepath);
-            DutyinfosDict = getDutyinfosDict(Dutyinfosfilepath);
-            model.Infos = new List<string>();
-            var Values = ComputeDutyInfos(ref model);
-            */
-            
+            Compute(ref model,index); 
         }
         #region  测试算法
         public void Compute(ref PersonOnDutyInfoModel model, int factor = 0)
@@ -336,7 +326,9 @@ namespace ITWebService.Core.DutyInfos
         /// </summary>
         private DutyRule getDutyRule(string path)
         {
-            var rule = JsonSerializer.Deserialize<DutyRule>(IO.ReadAllText(path));
+            var content = IO.ReadAllText(path);
+            //Console.WriteLine($"rule path : {path} content : {content}");
+            var rule = JsonSerializer.Deserialize<DutyRule>(content);
             return rule;
         }
         private Dictionary<string, Dutyinfos> getDutyinfosDict(string path)
