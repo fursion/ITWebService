@@ -17,7 +17,6 @@ RUN dotnet build "ITWebService.csproj" -c Release -o /app/build
 
 FROM build AS publish
 RUN dotnet publish "ITWebService.csproj" -c Release -o /app/publish
-RUN ls -al /app/publish/DutyInfo/IFS国际金融中心
 FROM base AS final
 WORKDIR /app
 #
