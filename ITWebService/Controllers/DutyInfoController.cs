@@ -10,6 +10,7 @@ using System.Text.Json;
 using ITWebService.Core;
 using ITWebService.Core.Config;
 using ITWebService.Models;
+using ITWebService.Core.DutyInfos;
 
 namespace ITWebService.Controllers
 {
@@ -26,9 +27,16 @@ namespace ITWebService.Controllers
         [HttpPost]
         public PersonOnDutyInfoModel Getinfo(PersonOnDutyInfoModel model)
         {
-            ITWebService.Core.DutyInfos.DutyInfoComputeHander computeHander = new(ref model, model.Location.Length);
+            DutyInfoComputeHander computeHander = new(ref model, model.Location.Length);
             return model;
 
+        }
+        [HttpGet("GetPersonInfo")]
+        public IActionResult GetPersonInfo([FromQuery]string location)
+        {
+            var result = new List<PersonInfo>();
+            DutyPeopleHander peopleHander = new Core.DutyInfos.DutyPeopleHander(location,ref result);
+            return Ok(result);
         }
         /// <summary>
         /// 检查服务端是否存在对应的文件
@@ -55,7 +63,7 @@ namespace ITWebService.Controllers
         {
             var str = System.IO.File.ReadAllText(Path.Combine(ConfigCore.WebRootPath, "/etc/ITWebService/DutyInfo/Sites.json"));
             var siteinfo = JsonSerializer.Deserialize<string[]>(str);
-            return siteinfo;
+            return siteinfo ?? new string[] { };
         }
     }
 }
