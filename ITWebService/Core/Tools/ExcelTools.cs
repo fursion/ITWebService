@@ -20,7 +20,6 @@ namespace ITWebService.Core.Tools
             try
             {
                 IWorkbook workbook = WorkbookFactory.Create(ExcelSr);
-                Console.WriteLine($"文件中一共有{workbook.NumberOfSheets}张表");
                 var SheetsNumber = workbook.NumberOfSheets;
                 if (SheetsNumber == 0)
                     return null;

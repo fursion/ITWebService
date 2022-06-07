@@ -11,6 +11,7 @@ using ITWebService.Core;
 using ITWebService.Core.Config;
 using ITWebService.Models;
 using ITWebService.Core.DutyInfos;
+using Microsoft.AspNetCore.Cors;
 
 namespace ITWebService.Controllers
 {
@@ -61,7 +62,7 @@ namespace ITWebService.Controllers
         [HttpGet]
         public string[] GetSiteInfo()
         {
-            var str = System.IO.File.ReadAllText(Path.Combine(ConfigCore.WebRootPath, "/etc/ITWebService/DutyInfo/Sites.json"));
+            var str = System.IO.File.ReadAllText(Path.Combine(ConfigCore.WebRootPath, "/var/ITWebService/DutyInfo/Sites.json"));
             var siteinfo = JsonSerializer.Deserialize<string[]>(str);
             return siteinfo ?? new string[] { };
         }

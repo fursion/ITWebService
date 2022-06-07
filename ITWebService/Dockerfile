@@ -21,5 +21,5 @@ FROM base AS final
 WORKDIR /app
 #
 COPY --from=publish /app/publish .
-COPY --from=publish /app/publish/DutyInfo /etc/ITWebService/DutyInfo
+COPY --from=publish /app/publish/DutyInfo /var/ITWebService/DutyInfo
 ENTRYPOINT ["dotnet", "ITWebService.dll"]

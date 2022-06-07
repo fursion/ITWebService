@@ -11,7 +11,7 @@ namespace ITWebService.Core.Config
     {
         private static bool IsInit = false;
         public static Task InitTask;
-        public static string WebRootPath { get; set; } = "/etc/ITWebService/";
+        public static string WebRootPath { get; set; } = "/var/ITWebService/";
         public static string TempFilePath { get { return Path.Combine(WebRootPath, "TempFile"); } }
         /// <summary>
         /// 程序工作目录

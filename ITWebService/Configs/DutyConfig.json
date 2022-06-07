@@ -1,5 +1,5 @@
 ﻿{
-  "ConfigPath":"/etc/ITWebService/DutyInfo",
+  "ConfigPath":"/var/ITWebService/DutyInfo",
   "SavePath": "TempFile",
   "ContactLinkPath": "linklist.json",
   "TemplatePath": "Template.json",

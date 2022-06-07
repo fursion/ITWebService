@@ -219,6 +219,7 @@ namespace ITWebService.Core.DutyInfos
         private ValueTuple<string, List<string>> AnalysisDutyDatatable(DateTime time, DataTable table, ref PersonOnDutyInfoModel model, int index = 0)
         {
             int day = time.Day;
+            Console.WriteLine(time);
             int NowMouthDays = Thread.CurrentThread.CurrentUICulture.Calendar.GetDaysInMonth(time.Year, time.Month);
             //获取表中时间定位点(Rows[0],Column[0])
             int ContactsIndex = 2;
