@@ -20,7 +20,7 @@ namespace ITWebService.Core.DutyInfos
         /// <param name="Name"></param>
         /// <returns></returns>
         public static string Nameformat(this string Name)
-        {      
+        {
             if (Name.Length == 2)
             {
                 Name = Name[0] + "  " + Name[1];
@@ -52,7 +52,7 @@ namespace ITWebService.Core.DutyInfos
         private Dictionary<string, Dutyinfos> DutyinfosDict { get; set; }
         public DutyInfoComputeHander(ref PersonOnDutyInfoModel model, int index = 0)
         {
-            Compute(ref model,index); 
+            Compute(ref model, index);
         }
         #region  测试算法
         public void Compute(ref PersonOnDutyInfoModel model, int factor = 0)
@@ -70,14 +70,29 @@ namespace ITWebService.Core.DutyInfos
             string[] header = IO.ReadAllLines(headerpath);
             string[] footer = IO.ReadAllLines(footerpath);
             List<string> infos = new();
-            foreach (var item in header)
-                infos.Add(item);
+            //foreach (var item in header)
+            //  infos.Add(item);
+            #region 修改
+            for (int i = 0; i < header.Length; i++)
+            {
+                if (i == 0)
+                    infos.Add(string.Format(header[0], DateTime.Now.ToString("yyyy-MM-dd")));
+                else
+                    infos.Add(header[i]);
+            }
+            #endregion
             foreach (var item in locainfos)
             {
                 infos.Add("---");
-                infos.Add(item.Item1);
+                if (item.Item1 == "IFS国际金融中心")
+                    infos.Add(item.Item1 + " 40楼IT服务台");
+                else if (item.Item1 == "瑞鑫时代大厦")
+                    infos.Add(item.Item1 + "6楼IT服务台");
+                else
+                    infos.Add(item.Item1);
                 infos.Add("---");
-                foreach(var info in item.Item2){
+                foreach (var info in item.Item2)
+                {
                     infos.Add(info);
                 }
             }
@@ -185,11 +200,12 @@ namespace ITWebService.Core.DutyInfos
             return result;
         }
         /// <summary>
-        /// 计算工作时间
+        /// 计算
         /// </summary>
         private string TemplateCompose(string Temp, PersonInfo info)
         {
-            return string.Format(Temp, info.Icon, info.Duty, info.Location, info.DutyTime, info.Name, info.Link);
+            System.Console.WriteLine(Temp, info.Icon, info.DutyTime, info.Name, info.Link);
+            return string.Format(Temp, info.Icon, info.DutyTime, info.Name, info.Link);
         }
         private string ComputePersonLinks(string PersonName)
         {
@@ -208,7 +224,7 @@ namespace ITWebService.Core.DutyInfos
             var dutyfilepath = Path.Combine(ConfigCore.WebRootPath, ConfigCore.GetConfigItem<DutyConfig>().FolderPath, model.Location[index], $"{model.Location[index]}duty.xlsx");//生成班表文件路径
 
             var tables = getDataTable(dutyfilepath);
-            return AnalysisDutyDatatable(TimeEffective(model.SelectTime), tables[0], ref model,index);
+            return AnalysisDutyDatatable(TimeEffective(model.SelectTime), tables[0], ref model, index);
 
         }
         /// <summary>
@@ -227,21 +243,179 @@ namespace ITWebService.Core.DutyInfos
             if (TimeLocation.Contains(time.Year.ToString()) && TimeLocation.Contains(time.Month.ToString()))//判断表是否为当前月
             {
                 List<string> infos = new List<string>();
+                List<PersonInfo> persons = new List<PersonInfo>();
                 for (int i = ContactsIndex; i < table.Rows.Count; i++)
                 {
                     var info = ComputeLocation(table, DutyRule, time, i);
+                    //排序2.0
                     if (info.IsTrue)
                     {
-                        infos.Add(TemplateCompose(PersonInfoTemplate, info));
+                        persons.Add(info);
+                        //infos.Add(TemplateCompose(PersonInfoTemplate, info));
                     }
                 }
-                PersonSort(ref infos);
+                PersonSort2(ref persons);
+                foreach (var p in persons)
+                {
+                    infos.Add(TemplateCompose(PersonInfoTemplate, p));
+                }
+                //排序算法1.0
+                //PersonSort(ref infos);
                 ValueTuple<string, List<string>> Values = new(model.Location[index], infos);
                 return Values;
                 //ComputeInfos(infos, ref model);
             }
             return new(null, null);
         }
+        /// <summary>
+        /// 排序算法2.0 
+        /// </summary>
+        private void PersonSort2(ref List<PersonInfo> personInfos)
+        {
+            if (DutyRule.SortRules == null)
+                return;
+            var sortRulesCount = DutyRule.SortRules.Keys.Count;
+            string[] keys = new string[sortRulesCount];
+            int key_index = 0;
+            DutyRule.SortRules.Keys.CopyTo(keys, key_index);
+            Sort2(DutyRule.SortRules, ref key_index, keys, ref personInfos);
+        }
+        private void Sort2(Dictionary<string, DutyRuleBody> ruledict, ref int rule_index, string[] rule_keys, ref List<PersonInfo> Infos)
+        {
+            var SortBlock = ruledict.Count;
+            if (ruledict.ContainsKey(rule_keys[rule_index]))
+            {
+                var rule = ruledict[rule_keys[rule_index]];
+                switch (rule.type)
+                {
+                    case "||": OrderSort(rule_keys[rule_index], ruledict, rule_keys, ref Infos, rule, ref rule_index, SortBlock); break;
+                    case "<": MaximumSort(MaximumSortType.Top, rule.ruleVaule[0], rule_keys[rule_index], ruledict, rule_keys, ref Infos, rule, ref rule_index, SortBlock); break;
+                    case ">": MaximumSort(MaximumSortType.Bottom, rule.ruleVaule[0], rule_keys[rule_index], ruledict, rule_keys, ref Infos, rule, ref rule_index, SortBlock); break;
+                    default: break;
+                }
+            }
+        }
+        /// <summary>
+        /// 顺序排序
+        /// </summary>
+        /// <param name="Sortkey"></param>
+        /// <param name="ruledict"></param>
+        /// <param name="rule_keys"></param>
+        /// <param name="infos"></param>
+        /// <param name="ruleBody"></param>
+        /// <param name="rule_index"></param>
+        /// <param name="rules"></param>
+        public void OrderSort(string Sortkey, Dictionary<string, DutyRuleBody> ruledict, string[] rule_keys, ref List<PersonInfo> infos, DutyRuleBody ruleBody, ref int rule_index, int rules)
+        {
+            var ins = new List<int>();
+            List<PersonInfo>[] pers = new List<PersonInfo>[ruleBody.ruleVaule.Count];
+
+            for (int key = 0; key < ruleBody.ruleVaule.Count; key++)
+            {
+                pers[key] = new List<PersonInfo>();
+                for (int i = 0; i < infos.Count; i++)
+                {
+                    if (ruleBody.ruleVaule[key] == typeof(PersonInfo).GetProperty(Sortkey).GetValue(infos[i], null).ToString())
+                    {
+                        pers[key].Add(infos[i]);
+                        ins.Add(i);
+                    }
+                }
+            }
+            if (rule_index < rules - 1)
+            {
+                rule_index++;
+                for (int i = 0; i < pers.Length; i++)
+                {
+                    Sort2(ruledict, ref rule_index, rule_keys, ref pers[i]);
+                }
+            }
+            List<PersonInfo> res = new List<PersonInfo>();
+            foreach (var sub in pers)
+            {
+                foreach (var subc in sub)
+                {
+                    res.Add(subc);
+                }
+            }
+            //移除已经参与排序的，剩下未命中key的项
+            var temp = new List<PersonInfo>();
+            foreach (var ind in ins)
+            {
+                for (int i = 0; i < infos.Count; i++)
+                {
+
+                    if (i == ind)
+                        continue;
+                    else
+                        temp.Add(infos[i]);
+                }
+            }
+            var tmp2 = infos;
+            infos.Clear(); infos = tmp2;
+            //将剩下的未命中的项目添加的返回体的尾部
+            foreach (var item in infos)
+            {
+                res.Add(item);
+            }
+            infos.Clear();
+            infos = res;
+        }
+        public enum MaximumSortType
+        {
+            Top,
+            Bottom
+        }
+        private void MaximumSort(MaximumSortType maximumSortType, string Target, string Sortkey, Dictionary<string, DutyRuleBody> ruledict, string[] rule_keys, ref List<PersonInfo> infos, DutyRuleBody ruleBody, ref int rule_index, int rules)
+        {
+            var TargetIndex = new List<int>();
+
+            List<PersonInfo> tars = new List<PersonInfo>();
+            for (int i = 0; i < infos.Count; i++)
+            {
+                if (infos[i].GetType().GetProperty(Sortkey).GetValue(infos[i], null).ToString().Contains(ruleBody.ruleVaule[0].Nameformat()))
+                {
+                    tars.Add(infos[i]);
+                    TargetIndex.Add(i);
+                }
+            }
+            foreach (var item in TargetIndex)
+            {
+                infos.RemoveAt(item);
+            }
+            if (rule_index < rules - 1)
+            {
+                rule_index++;
+                Sort2(ruledict, ref rule_index, rule_keys, ref tars);
+            }
+            List<PersonInfo> res = new List<PersonInfo>();
+            if (maximumSortType == MaximumSortType.Top)
+            {
+                foreach (var item in tars)
+                {
+                    res.Add(item);
+                }
+                foreach (var item in infos)
+                {
+                    res.Add(item);
+                }
+                infos.Clear();
+                infos = res;
+            }
+            else
+            {
+                foreach (var item in tars)
+                {
+                    infos.Add(item);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 人员排序
+        /// </summary>
+        /// <param name="infos"></param>
+        [Obsolete("此方法遗弃", true)]
         private void PersonSort(ref List<string> infos)
         {
             if (DutyRule.SortRules == null)
@@ -250,10 +424,9 @@ namespace ITWebService.Core.DutyInfos
             string[] keys = new string[sortRulesCount];
             int key_index = 0;
             DutyRule.SortRules.Keys.CopyTo(keys, key_index);
-            Sort(DutyRule.SortRules, ref key_index, keys, ref infos);
-            //var method = this.GetType().GetMethod($"Sort{keys[key_index]}");
-            //method.Invoke(this, new object[] { model, DutyRule.SortRules[keys[key_index]], key_index });
+            //Sort(DutyRule.SortRules, ref key_index, keys, ref infos);
         }
+
         /// <summary>
         /// 递归执行排序规则
         /// </summary>
@@ -261,6 +434,7 @@ namespace ITWebService.Core.DutyInfos
         /// <param name="dict_index"></param>
         /// <param name="dict_keys"></param>
         /// <param name="Infos"></param>
+        [Obsolete("此方法遗弃", true)]
         private void Sort(Dictionary<string, List<string>> ruledict, ref int dict_index, string[] dict_keys, ref List<string> Infos)
         {
             var max = ruledict.Keys.Count;
@@ -328,7 +502,6 @@ namespace ITWebService.Core.DutyInfos
         private DutyRule getDutyRule(string path)
         {
             var content = IO.ReadAllText(path);
-            //Console.WriteLine($"rule path : {path} content : {content}");
             var rule = JsonSerializer.Deserialize<DutyRule>(content);
             return rule;
         }

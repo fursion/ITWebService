@@ -2,21 +2,29 @@
   "LocationInOnly": false,
   "Cycle": 4,
   "Dispute": {
-    "白": {
-    }
+    "白": {}
   },
   "MaskItem": [
     "白（初）",
     "休"
   ],
   "SortRules": {
-    "Shift": [
-      "早班",
-      "常班",
-      "白班",
-      "中班",
-      "晚班",
-      "夜班"
-    ]
+    "Duty": {
+      "type": "||",
+      "ruleVaule": [
+        "早班",
+        "常班",
+        "白班",
+        "中班",
+        "晚班",
+        "夜班"
+      ]
+    },
+    "Name": {
+      "type": ">",
+      "ruleVaule": [
+        "赵俊"
+      ]
+    }
   }
 }

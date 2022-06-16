@@ -22,4 +22,11 @@ WORKDIR /app
 #
 COPY --from=publish /app/publish .
 COPY --from=publish /app/publish/DutyInfo /var/ITWebService/DutyInfo
+ENV TZ=Asia/Shanghai \
+    DEBIAN_FRONTEND=noninteractive
+
+RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime \
+    && echo ${TZ} > /etc/timezone \
+    && dpkg-reconfigure --frontend noninteractive tzdata \
+    && rm -rf /var/lib/apt/lists/*
 ENTRYPOINT ["dotnet", "ITWebService.dll"]
