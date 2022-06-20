@@ -255,17 +255,45 @@ namespace ITWebService.Core.DutyInfos
                     }
                 }
                 PersonSort2(ref persons);
-                foreach (var p in persons)
-                {
-                    infos.Add(TemplateCompose(PersonInfoTemplate, p));
-                }
-                //排序算法1.0
-                //PersonSort(ref infos);
+                infos = FormatInfo(persons);
+                //foreach (var p in persons)
+                //{
+                    //infos.Add(TemplateCompose(PersonInfoTemplate, p));
+                //}
                 ValueTuple<string, List<string>> Values = new(model.Location[index], infos);
                 return Values;
                 //ComputeInfos(infos, ref model);
             }
             return new(null, null);
+        }
+        public List<string> FormatInfo(List<PersonInfo> persons)
+        {
+            List<string> infos = new List<string>();
+            string tmp = "";
+            string Target = null;
+            foreach (var p in persons)
+            {
+                if (p.DutyTime == Target)
+                {
+                    tmp += string.Format(" [{0}]({1})", p.Name, p.Link);
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(tmp))
+                    {
+                        tmp = TemplateCompose(PersonInfoTemplate, p);
+                        Target = p.DutyTime;
+                    }
+                    else
+                    {
+                        infos.Add(tmp);
+                        tmp = TemplateCompose(PersonInfoTemplate, p);
+                        Target = p.DutyTime;
+                    }
+                }   
+            }
+            infos.Add(tmp);
+            return infos;
         }
         /// <summary>
         /// 排序算法2.0 
