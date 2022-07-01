@@ -275,7 +275,7 @@ namespace ITWebService.Core.DutyInfos
             {
                 if (p.DutyTime == Target)
                 {
-                    tmp += string.Format(" [{0}]({1})", p.Name, p.Link);
+                    tmp += string.Format("   [{0}]({1})", p.Name, p.Link);
                 }
                 else
                 {

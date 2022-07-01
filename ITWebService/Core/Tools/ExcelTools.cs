@@ -49,7 +49,7 @@ namespace ITWebService.Core.Tools
                         }
                         startRow = sheet.FirstRowNum;
                         int rowCount = sheet.LastRowNum;
-                        for (int i = startRow; i < rowCount; ++i)
+                        for (int i = startRow; i <=rowCount; i++)
                         {
                             IRow row = sheet.GetRow(i);
                             if (null == row)
